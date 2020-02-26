@@ -1,0 +1,15 @@
+disabled_rules:
+  - function_body_length
+  - identifier_name
+  - line_length
+
+opt_in_rules:
+  - redundant_discardable_let
+  - redundant_nil_coalescing
+  - redundant_objc_attribute
+  - redundant_optional_initialization
+  - redundant_set_access_control
+  - redundant_string_enum_value
+  - redundant_type_annotation
+  - redundant_void_return
+  - sorted_imports

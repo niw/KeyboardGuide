@@ -36,7 +36,7 @@ public final class KeyboardGuide: NSObject {
     }
 
     @objc
-    public var isActive: Bool = false
+    public private(set) var isActive: Bool = false
 
     @objc
     public func activate() {

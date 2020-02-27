@@ -71,12 +71,16 @@ public final class KeyboardSafeAreaView: UIView {
     }
 
     public override func didMoveToWindow() {
+        super.didMoveToWindow()
+
         if let window = window {
             keyboardSafeArea = window.keyboardSafeArea
         }
     }
 
     public override func willMove(toWindow newWindow: UIWindow?) {
+        super.willMove(toWindow: newWindow)
+
         if newWindow == nil {
             keyboardSafeArea = nil
         }

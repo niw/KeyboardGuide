@@ -39,7 +39,7 @@ public final class KeyboardSafeAreaView: UIView {
      A layout guide where is safe from, not covered by the current keyboard.
      */
     @objc
-    public var layoutGuide: UILayoutGuide!
+    public private(set) var layoutGuide: UILayoutGuide!
 
     /**
      Insets from `bounds` to  `layoutGuide` where is safe from, not covered by the current keyboard.

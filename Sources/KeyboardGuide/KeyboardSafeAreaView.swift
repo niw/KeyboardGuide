@@ -9,16 +9,51 @@
 import Foundation
 import UIKit
 
+@objc(KBGKeyboardSafeAreaViewDelegate)
+public protocol KeyboardSafeAreaViewDelegate {
+    /**
+     Callback delegate when `KeyboardSafeAreaView` did lay out and change `insets` for `layoutGuide`.
+
+     Use this callback for manual lay outing.
+     You _MUST NOT_ change `KeyboardSafeAreaView`'s `frame` or anythings that can re-lay out it.
+
+     - See also:
+       - `KeyboardSafeAreaView`
+     */
+    @objc
+    func keyboardSafeAreaView(_ keyboardSafeAreaView: KeyboardSafeAreaView, didChangeInsets insets: UIEdgeInsets)
+}
+
 /**
  A view that provides a layout guide that represents which part of that view is safe from, not covered by the current keyboard.
  */
 @objc(KBGKeyboardSafeAreaView)
 public final class KeyboardSafeAreaView: UIView {
     /**
+     A callback delegate for the keyboard safe area layout changes.
+     */
+    @objc
+    public weak var delegate: KeyboardSafeAreaViewDelegate?
+
+    /**
      A layout guide where is safe from, not covered by the current keyboard.
      */
     @objc
     public var layoutGuide: UILayoutGuide!
+
+    /**
+     Insets from `bounds` to  `layoutGuide` where is safe from, not covered by the current keyboard.
+     */
+    @objc
+    public var insets: UIEdgeInsets {
+        let layoutFrame = layoutGuide.layoutFrame
+        return UIEdgeInsets(
+            top: layoutFrame.minY - bounds.minY,
+            left: layoutFrame.minX - bounds.minX,
+            bottom: bounds.maxY - layoutFrame.maxY,
+            right: bounds.maxX - layoutFrame.maxX
+        )
+    }
 
     /**
      Set `true` to ignore any keyboard states that are not for this application.
@@ -59,6 +94,17 @@ public final class KeyboardSafeAreaView: UIView {
         addLayoutGuide(layoutGuide)
         self.layoutGuide = layoutGuide
 
+        // This hidden view is added to have `layoutSubview` callback by the layout constraints to
+        // the window keyboard safe area.
+        let view = UIView()
+        view.isHidden = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+        constraints.append(view.topAnchor.constraint(equalTo: layoutGuide.topAnchor))
+        constraints.append(view.leftAnchor.constraint(equalTo: layoutGuide.leftAnchor))
+        constraints.append(view.bottomAnchor.constraint(equalTo: layoutGuide.bottomAnchor))
+        constraints.append(view.rightAnchor.constraint(equalTo: layoutGuide.rightAnchor))
+        self.addSubview(view)
+
         NSLayoutConstraint.activate(constraints)
 
         updateLayoutGuideConstraints()
@@ -68,6 +114,13 @@ public final class KeyboardSafeAreaView: UIView {
         didSet {
             updateLayoutGuideConstraints()
         }
+    }
+
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+
+        // TODO: Detect lay outing loop, also actual `insets` change.
+        delegate?.keyboardSafeAreaView(self, didChangeInsets: self.insets)
     }
 
     public override func didMoveToWindow() {

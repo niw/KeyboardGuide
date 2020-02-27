@@ -2,6 +2,8 @@
 
 A modern, real iOS keyboard system notifications handler framework that Just Works.
 
+![KeyboardGuide](Resources/KeyboardGuide.png)
+
 As you know, handling the keyboard on iOS was just a nightmare.
 
 On the internet, there are many, many iOS keyboard system notifications such as `UIResponder.keyboardWillChangeFrameNotification` (`UIKeyboardWillChangeFrameNotification`), but most of them are not implemented properly.

@@ -6,7 +6,7 @@ A modern, real iOS keyboard system notifications handler framework that Just Wor
 
 As you know, handling the keyboard on iOS was just a nightmare.
 
-On the internet, there are many, many iOS keyboard system notifications such as `UIResponder.keyboardWillChangeFrameNotification` (`UIKeyboardWillChangeFrameNotification`), but most of them are not implemented properly.
+On the internet, there are many, many iOS keyboard handler implementations for system notifications such as `UIResponder.keyboardWillChangeFrameNotification` (`UIKeyboardWillChangeFrameNotification`), but most of them are not implemented properly.
 
 For example, many of them are not converting the keyboard frame in the right coordinate or not considering iPad keyboard behaviors.
 Also, there are many undocumented behaviors that are not consistent between each iOS version.

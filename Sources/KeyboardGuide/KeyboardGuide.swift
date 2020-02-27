@@ -102,14 +102,14 @@ public final class KeyboardGuide: NSObject {
 
     /**
      When the application entered in background, iOS may send multiple state change events to the application,
-     such as trait collection changes to capture application screen image in both orientations for the app switcher.
+     such as trait collection change events to capture screen image in both orientations for the application switcher.
 
-     In some cases, the application may change its view structure depends on the state changed and the text view may resign first responder.
-     However, since the application has entered in background, iOS will not send any keyboard notifications to the application.
+     In some cases, the application may change its view structure and the text fields may resign first responder.
+     However, since the application has entered in background, iOS will _NOT_ send any keyboard notifications to the application.
 
-     Therefore, logically, we do not have any safe ways to know the current keyboard state over the moment that the application is entering background.
-     To workaround this behavior, it retains the current first responder and restore it if `shouldRestoreFirstResponder` returns `true`,
-     which is by default `true` in case it is`UITextInputTraits`.
+     Therefore, logically, there are no ways to know the current keyboard state after the application is entering background.
+     To workaround this behavior, it retains the current first responder and restore it if `shouldRestoreFirstResponder` returns `true`
+     (Default to `true` if it is `UITextInputTraits` such as `UITextView`.)
 
      - SeeAlso:
      `UIResponder.shouldRestoreFirstResponder`

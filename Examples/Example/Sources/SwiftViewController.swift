@@ -145,6 +145,7 @@ class SwiftViewController: UIViewController {
         textView.translatesAutoresizingMaskIntoConstraints = false
         constraints.append(textView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: spacing))
         constraints.append(textView.leftAnchor.constraint(equalTo: view.layoutMarginsGuide.leftAnchor))
+        constraints.append(textView.bottomAnchor.constraint(greaterThanOrEqualTo: textView.topAnchor))
         constraints.append(textView.rightAnchor.constraint(equalTo: view.layoutMarginsGuide.rightAnchor))
         view.addSubview(textView)
         self.textView = textView
@@ -201,6 +202,7 @@ class SwiftViewController: UIViewController {
         let textViewBottomAnchorConstraint = useContentInsetsSwitch.isOn ?
                 textView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: -spacing) :
                 textView.bottomAnchor.constraint(equalTo: view.keyboardSafeArea.layoutGuide.bottomAnchor, constant: -spacing)
+        textViewBottomAnchorConstraint.priority = .defaultLow
         textViewBottomAnchorConstraint.isActive = true
         self.textViewBottomAnchorConstraint = textViewBottomAnchorConstraint
 

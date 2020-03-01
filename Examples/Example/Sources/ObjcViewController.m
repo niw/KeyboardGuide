@@ -103,7 +103,10 @@
     textView.translatesAutoresizingMaskIntoConstraints = NO;
     [constraints addObject:[textView.topAnchor constraintEqualToAnchor:label.bottomAnchor]];
     [constraints addObject:[textView.leadingAnchor constraintEqualToAnchor:self.view.layoutMarginsGuide.leadingAnchor]];
-    [constraints addObject:[textView.bottomAnchor constraintEqualToAnchor:self.view.kbg_keyboardSafeArea.layoutGuide.bottomAnchor]];
+    [constraints addObject:[textView.bottomAnchor constraintGreaterThanOrEqualToAnchor:textView.topAnchor]];
+    NSLayoutConstraint * const textViewBottonAnchorConstraint = [textView.bottomAnchor constraintEqualToAnchor:self.view.kbg_keyboardSafeArea.layoutGuide.bottomAnchor];
+    textViewBottonAnchorConstraint.priority = UILayoutPriorityDefaultLow;
+    [constraints addObject:textViewBottonAnchorConstraint];
     [constraints addObject:[textView.trailingAnchor constraintEqualToAnchor:self.view.layoutMarginsGuide.trailingAnchor]];
     [self.view addSubview:textView];
     self.textView = textView;

@@ -17,7 +17,7 @@ final class RelativeLayoutInWindowView: UIView {
     weak var delegate: RelativeLayoutInWindowViewDelegate?
 
     private var subview: UIView!
-    private var constraint: NSLayoutConstraint?
+    private var bottomAnchorToWindowBottomAnchorConstraint: NSLayoutConstraint?
 
     init() {
         super.init(frame: CGRect.zero)
@@ -25,10 +25,23 @@ final class RelativeLayoutInWindowView: UIView {
         isHidden = true
         isUserInteractionEnabled = false
 
+        var constraints = [NSLayoutConstraint]()
+
         let subview = UIView()
         subview.translatesAutoresizingMaskIntoConstraints = false
+        constraints.append(subview.leftAnchor.constraint(equalTo: leftAnchor))
+        let bottomAnchorConstraint = subview.bottomAnchor.constraint(equalTo: bottomAnchor)
+        bottomAnchorConstraint.priority = .defaultLow
+#if DEBUG
+        bottomAnchorConstraint.identifier = "RelativeLayoutInWindowView.subview.bottomAnchorConstraint"
+#endif
+        constraints.append(bottomAnchorConstraint)
+        constraints.append(subview.rightAnchor.constraint(equalTo: rightAnchor))
+        constraints.append(subview.heightAnchor.constraint(equalToConstant: 0.0))
         addSubview(subview)
         self.subview = subview
+
+        NSLayoutConstraint.activate(constraints)
     }
 
     @available(*, unavailable)
@@ -42,18 +55,21 @@ final class RelativeLayoutInWindowView: UIView {
         super.didMoveToWindow()
         guard let window = window else { return }
 
-        let constraint = subview.bottomAnchor.constraint(lessThanOrEqualTo: window.bottomAnchor)
-        constraint.isActive = true
-        self.constraint = constraint
+        let bottomAnchorToWindowBottomAnchorConstraint = subview.bottomAnchor.constraint(equalTo: window.bottomAnchor)
+#if DEBUG
+        bottomAnchorToWindowBottomAnchorConstraint.identifier = "RelativeLayoutInWindowView.subview.bottomAnchorToWindowBottomAnchorConstraint"
+#endif
+        bottomAnchorToWindowBottomAnchorConstraint.isActive = true
+        self.bottomAnchorToWindowBottomAnchorConstraint = bottomAnchorToWindowBottomAnchorConstraint
     }
 
     override func willMove(toWindow newWindow: UIWindow?) {
         super.willMove(toWindow: newWindow)
         guard newWindow == nil else { return }
 
-        if let constraint = constraint {
-            constraint.isActive = false
-            self.constraint = nil
+        if let bottomAnchorToWindowBottomAnchorConstraint = bottomAnchorToWindowBottomAnchorConstraint {
+            bottomAnchorToWindowBottomAnchorConstraint.isActive = false
+            self.bottomAnchorToWindowBottomAnchorConstraint = nil
         }
     }
 

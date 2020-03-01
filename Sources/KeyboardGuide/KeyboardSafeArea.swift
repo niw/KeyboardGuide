@@ -72,12 +72,22 @@ public final class KeyboardSafeArea: NSObject {
 
         relativeLayoutInWindowView = RelativeLayoutInWindowView()
         relativeLayoutInWindowView.translatesAutoresizingMaskIntoConstraints = false
+        constraints.append(relativeLayoutInWindowView.leftAnchor.constraint(equalTo: view.leftAnchor))
+        constraints.append(relativeLayoutInWindowView.bottomAnchor.constraint(equalTo: view.bottomAnchor))
+        constraints.append(relativeLayoutInWindowView.rightAnchor.constraint(equalTo: view.rightAnchor))
+        constraints.append(relativeLayoutInWindowView.heightAnchor.constraint(equalToConstant: 0.0))
         view.insertSubview(relativeLayoutInWindowView, at: 0)
 
         layoutGuide = UILayoutGuide()
+#if DEBUG
+        layoutGuide.identifier = "KeyboardSafeArea.layoutGuide"
+#endif
         constraints.append(layoutGuide.topAnchor.constraint(equalTo: view.topAnchor))
         constraints.append(layoutGuide.leftAnchor.constraint(equalTo: view.leftAnchor))
         bottomAnchorConstraint = layoutGuide.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+#if DEBUG
+        bottomAnchorConstraint.identifier = "KeyboardSafeArea.layoutGuide.bottomAnchorConstraint"
+#endif
         constraints.append(bottomAnchorConstraint)
         constraints.append(layoutGuide.rightAnchor.constraint(equalTo: view.rightAnchor))
         view.addLayoutGuide(layoutGuide)

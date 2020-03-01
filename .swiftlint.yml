@@ -4,6 +4,7 @@ disabled_rules:
   - line_length
 
 opt_in_rules:
+  - implicit_return
   - redundant_discardable_let
   - redundant_nil_coalescing
   - redundant_objc_attribute

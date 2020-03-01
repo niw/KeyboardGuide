@@ -88,9 +88,11 @@ public final class KeyboardSafeArea: NSObject {
 
         relativeLayoutInWindowView.delegate = self
         KeyboardGuide.shared.addObserver(self)
+
+        updateLayoutGuideConstraints(prefersLayout: false)
     }
 
-    private func updateLayoutGuideConstraints() {
+    private func updateLayoutGuideConstraints(prefersLayout: Bool = true) {
         guard let view = view else { return }
 
         if let dockedKeyboardState = KeyboardGuide.shared.dockedKeyboardState,
@@ -102,7 +104,9 @@ public final class KeyboardSafeArea: NSObject {
             bottomAnchorConstraint.constant = 0.0
         }
 
-        view.layoutIfNeeded()
+        if prefersLayout {
+            view.layoutIfNeeded()
+        }
     }
 }
 

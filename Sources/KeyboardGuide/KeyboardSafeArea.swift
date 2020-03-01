@@ -11,17 +11,6 @@ import UIKit
 
 /**
  An object represent where is safe from, not covered by the current keyboard in the given view.
-
- Recommend to use `KeyboardSafeAreaView`.
-
- This is very important that the safe area represented by this object is **NOT** updated by changing the relative position
- between given view and the screen where the keyboard is presented.
- You _SHOULD NOT_ directly instantiate this class or it's your responsibility to understand this behavior
- also call `update` method upon the change.
-
- - See also:
-   - `KeyboardSafeAreaView`
-   - `UIWindow.keyboardSafeArea`
  */
 @objc(KBGKeyboardSafeArea)
 public final class KeyboardSafeArea: NSObject {
@@ -32,97 +21,96 @@ public final class KeyboardSafeArea: NSObject {
     public weak var view: UIView?
 
     /**
-     A layout guide in the `view` where is safe from, not covered by the current keyboard.
+     A layout guide for the `view` where is safe from, not covered by the current keyboard.
+
      - See also:
        - `view`
      */
     @objc
     public let layoutGuide: UILayoutGuide
-    let layoutGuideBottomAnchorConstraint: NSLayoutConstraint
 
     /**
-     Insets from the `view`'s bounds to the `layoutGuide`.
+     Insets from the `view`'s `bounds` to the `layoutGuide` edges.
+
      - See also:
        - `view`
        - `layoutGuide`
      */
     @objc
-    public private(set) var insets = UIEdgeInsets.zero
+    public var insets: UIEdgeInsets {
+        guard let view = layoutGuide.owningView else { return UIEdgeInsets.zero }
+
+        let bounds = view.bounds
+        let layoutFrame = layoutGuide.layoutFrame
+
+        return UIEdgeInsets(
+            top: layoutFrame.minY - bounds.minY,
+            left: layoutFrame.minX - bounds.minX,
+            bottom: bounds.maxY - layoutFrame.maxY,
+            right: bounds.maxX - layoutFrame.maxX
+        )
+    }
 
     /**
-     A layout guide in the `view` where is safe from, not covered by the current keyboard for this application.
-     - See also:
-       - `view`
-       - `KeyboardState.isLocal`
+     Set `true` to ignore any keyboard states that are not for this application.
      */
     @objc
-    public let localOnlyLayoutGuide: UILayoutGuide
-    let localOnlyLayoutGuideBottomAnchorConstraint: NSLayoutConstraint
+    public var isLocalOnly: Bool = false {
+        didSet {
+            updateLayoutGuideConstraints()
+        }
+    }
 
-    /**
-     Insets from the `view`'s bounds to the `localOnlyLayoutGuide`.
-     - See also:
-       - `view`
-       - `layoutGuide`
-     */
-    @objc
-    public private(set) var localOnlyInsets = UIEdgeInsets.zero
+    private let relativeLayoutInWindowView: RelativeLayoutInWindowView
+    private let bottomAnchorConstraint: NSLayoutConstraint
+    private var bottomAnchorToWindowConstraint: NSLayoutConstraint?
 
-    @objc
-    public init(view: UIView) {
-        var constraints = [NSLayoutConstraint]()
-
+    init(view: UIView) {
         self.view = view
 
-        let layoutGuide = UILayoutGuide()
+        var constraints = [NSLayoutConstraint]()
+
+        relativeLayoutInWindowView = RelativeLayoutInWindowView()
+        relativeLayoutInWindowView.translatesAutoresizingMaskIntoConstraints = false
+        view.insertSubview(relativeLayoutInWindowView, at: 0)
+
+        layoutGuide = UILayoutGuide()
         constraints.append(layoutGuide.topAnchor.constraint(equalTo: view.topAnchor))
         constraints.append(layoutGuide.leftAnchor.constraint(equalTo: view.leftAnchor))
-        let layoutGuideBottomAnchorConstraint = layoutGuide.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        constraints.append(layoutGuideBottomAnchorConstraint)
-        self.layoutGuideBottomAnchorConstraint = layoutGuideBottomAnchorConstraint
+        bottomAnchorConstraint = layoutGuide.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        constraints.append(bottomAnchorConstraint)
         constraints.append(layoutGuide.rightAnchor.constraint(equalTo: view.rightAnchor))
         view.addLayoutGuide(layoutGuide)
-        self.layoutGuide = layoutGuide
-
-        let localOnlyLayoutGuide = UILayoutGuide()
-        constraints.append(localOnlyLayoutGuide.topAnchor.constraint(equalTo: view.topAnchor))
-        constraints.append(localOnlyLayoutGuide.leftAnchor.constraint(equalTo: view.leftAnchor))
-        let localOnlyLayoutGuideBottomAnchorConstraint = localOnlyLayoutGuide.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        constraints.append(localOnlyLayoutGuideBottomAnchorConstraint)
-        self.localOnlyLayoutGuideBottomAnchorConstraint = localOnlyLayoutGuideBottomAnchorConstraint
-        constraints.append(localOnlyLayoutGuide.rightAnchor.constraint(equalTo: view.rightAnchor))
-        view.addLayoutGuide(localOnlyLayoutGuide)
-        self.localOnlyLayoutGuide = localOnlyLayoutGuide
 
         NSLayoutConstraint.activate(constraints)
 
         super.init()
 
+        relativeLayoutInWindowView.delegate = self
         KeyboardGuide.shared.addObserver(self)
     }
 
-    /**
-     Call this method when the relative position between `view` and the screen where the keyboard is presented is changed.
-     */
-    @objc
-    func update() {
+    private func updateLayoutGuideConstraints() {
         guard let view = view else { return }
 
         if let dockedKeyboardState = KeyboardGuide.shared.dockedKeyboardState,
+            !(isLocalOnly && !dockedKeyboardState.isLocal),
             let keyboardFrameInView = dockedKeyboardState.frame(in: view) {
             let length = max(0.0, view.bounds.maxY - max(view.bounds.minY, keyboardFrameInView.minY))
-            layoutGuideBottomAnchorConstraint.constant = -length
-            insets.bottom = length
-            localOnlyLayoutGuideBottomAnchorConstraint.constant = (dockedKeyboardState.isLocal) ? -length : 0.0
-            localOnlyInsets.bottom = length
+            bottomAnchorConstraint.constant = -length
         } else {
-            layoutGuideBottomAnchorConstraint.constant = 0.0
-            insets.bottom = 0.0
-            localOnlyLayoutGuideBottomAnchorConstraint.constant = 0.0
-            localOnlyInsets.bottom = 0.0
+            bottomAnchorConstraint.constant = 0.0
         }
 
         view.layoutIfNeeded()
+    }
+}
+
+// MARK: - RelativeLayoutInWindowViewDelegate
+
+extension KeyboardSafeArea: RelativeLayoutInWindowViewDelegate {
+    func relativeLayoutInWindowView(_ keyboardSafeAreaView: RelativeLayoutInWindowView, didLayoutInWindow window: UIWindow) {
+        updateLayoutGuideConstraints()
     }
 }
 
@@ -130,6 +118,6 @@ public final class KeyboardSafeArea: NSObject {
 
 extension KeyboardSafeArea: KeyboardGuideObserver {
     public func keyboardGuide(_ keyboardGuide: KeyboardGuide, didChangeDockedKeyboardState dockedKeyboardState: KeyboardState?) {
-        update()
+        updateLayoutGuideConstraints()
     }
 }

@@ -13,9 +13,8 @@
 
 @import KeyboardGuide;
 
-@interface ObjcViewController () <KBGKeyboardGuideObserver, KBGKeyboardSafeAreaViewDelegate>
+@interface ObjcViewController () <KBGKeyboardGuideObserver>
 
-@property (nonatomic, nullable) KBGKeyboardSafeAreaView *keyboardSafeAreaView;
 @property (nonatomic, nullable) UILabel *label;
 @property (nonatomic, nullable) UITextView *textView;
 
@@ -79,17 +78,6 @@
 
     NSMutableArray<NSLayoutConstraint *> * const constraints = [[NSMutableArray alloc] init];
 
-    KBGKeyboardSafeAreaView * const keyboardSafeAreaView = [[KBGKeyboardSafeAreaView alloc] init];
-    keyboardSafeAreaView.delegate = self;
-
-    keyboardSafeAreaView.translatesAutoresizingMaskIntoConstraints = NO;
-    [constraints addObject:[keyboardSafeAreaView.topAnchor constraintEqualToAnchor:self.view.topAnchor]];
-    [constraints addObject:[keyboardSafeAreaView.leftAnchor constraintEqualToAnchor:self.view.leftAnchor]];
-    [constraints addObject:[keyboardSafeAreaView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor]];
-    [constraints addObject:[keyboardSafeAreaView.rightAnchor constraintEqualToAnchor:self.view.rightAnchor]];
-    [self.view addSubview:keyboardSafeAreaView];
-    self.keyboardSafeAreaView = keyboardSafeAreaView;
-
     UILabel * const label = [[UILabel alloc] init];
 
     label.translatesAutoresizingMaskIntoConstraints = NO;
@@ -105,14 +93,17 @@
     textView.layer.borderWidth = 1.0;
     NSMutableString * const text = [[NSMutableString alloc] init];
     for (NSUInteger count = 0; count < 10; count++) {
-        [text appendString:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n"];
+        [text appendString:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n"];
+        [text appendString:@"Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n"];
+        [text appendString:@"Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n"];
+        [text appendString:@"Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n"];
     }
     textView.text = text;
 
     textView.translatesAutoresizingMaskIntoConstraints = NO;
     [constraints addObject:[textView.topAnchor constraintEqualToAnchor:label.bottomAnchor]];
     [constraints addObject:[textView.leadingAnchor constraintEqualToAnchor:self.view.layoutMarginsGuide.leadingAnchor]];
-    [constraints addObject:[textView.bottomAnchor constraintEqualToAnchor:self.view.layoutMarginsGuide.bottomAnchor]];
+    [constraints addObject:[textView.bottomAnchor constraintEqualToAnchor:self.view.kbg_keyboardSafeArea.layoutGuide.bottomAnchor]];
     [constraints addObject:[textView.trailingAnchor constraintEqualToAnchor:self.view.layoutMarginsGuide.trailingAnchor]];
     [self.view addSubview:textView];
     self.textView = textView;
@@ -120,19 +111,6 @@
     [NSLayoutConstraint activateConstraints:constraints];
 
     [self _main_updateLabelText];
-}
-
-// MARK: - KBGKeyboardSafeAreaViewDelegate
-
-- (void)keyboardSafeAreaView:(KBGKeyboardSafeAreaView *)keyboardSafeAreaView didChangeInsets:(UIEdgeInsets)insets
-{
-    UIEdgeInsets contentInsets = self.textView.contentInset;
-    contentInsets.bottom = insets.bottom;
-    self.textView.contentInset = contentInsets;
-
-    UIEdgeInsets scrollIndicatorInsets = self.textView.scrollIndicatorInsets;
-    scrollIndicatorInsets.bottom = insets.bottom;
-    self.textView.scrollIndicatorInsets = scrollIndicatorInsets;
 }
 
 // MARK: - KBGKeyboardGuideObserver

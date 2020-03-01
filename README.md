@@ -17,22 +17,14 @@ Based on years experience of iOS application development and various tests on ea
 
 ## Usage
 
-Add `import KeyboardGuide`. Create `KeyboardSafeAreaView` add to your view.
-Then, lay out your subviews by adding constraints to `keyboardSafeAreaView.layoutGuide`, where represents the safe area from, not covered by the keyboard.
+Add `import KeyboardGuide`.
+Lay out your subviews by adding constraints to `view.keyboardSafeArea.layoutGuide`, where represents the safe area from, not covered by the keyboard.
 It works as like `safeAreaLayoutGuide` for the notch.
 
 ```
 import KeyboardGuide
 
-...
-
-let keyboardSafeAreaView = KeyboardSafeAreaView(frame: self.view.bounds)
-keyboardSafeAreaView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-view.addSubview(keyboardSafeAreaView)
-
-...
-
-textView.bottomAnchor.constraint(equalTo: keyboardSafeAreaView.layoutGuide.bottomAnchor))
+textView.bottomAnchor.constraint(equalTo: self.view.keyboardSafeArea.layoutGuide.bottomAnchor))
 ```
 
 ## Known limitations

@@ -38,13 +38,17 @@ class SwiftViewController: UIViewController {
 
     // MARK: - UIViewController
 
-    var keyboardSafeAreaView: KeyboardSafeAreaView?
-
     var keyboardSafeAreaLayoutGuideView: UIView?
-
     var keyboardFrameLabel: UILabel?
     var localOnlySwitch: UISwitch?
+    var useContentInsetsSwitch: UISwitch?
     var showKeyboardSafeAreaLayoutGuideSwitch: UISwitch?
+    var textView: UITextView?
+    var textViewBottomAnchorConstraint: NSLayoutConstraint?
+
+    private var spacing: CGFloat {
+        UIFont.systemFontSize * 0.8
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,24 +63,12 @@ class SwiftViewController: UIViewController {
 
         var constraints = [NSLayoutConstraint]()
 
-        let spacing = UIFont.systemFontSize * 0.8
-
-        let keyboardSafeAreaView = KeyboardSafeAreaView()
-        keyboardSafeAreaView.translatesAutoresizingMaskIntoConstraints = false
-        constraints.append(keyboardSafeAreaView.topAnchor.constraint(equalTo: view.topAnchor))
-        constraints.append(keyboardSafeAreaView.leftAnchor.constraint(equalTo: view.leftAnchor))
-        constraints.append(keyboardSafeAreaView.bottomAnchor.constraint(equalTo: view.bottomAnchor))
-        constraints.append(keyboardSafeAreaView.rightAnchor.constraint(equalTo: view.rightAnchor))
-        view.addSubview(keyboardSafeAreaView)
-        self.keyboardSafeAreaView = keyboardSafeAreaView
-
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.spacing = spacing
         stackView.translatesAutoresizingMaskIntoConstraints = false
         constraints.append(stackView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: spacing))
         constraints.append(stackView.leftAnchor.constraint(equalTo: view.layoutMarginsGuide.leftAnchor))
-        constraints.append(stackView.bottomAnchor.constraint(equalTo: keyboardSafeAreaView.layoutGuide.bottomAnchor, constant: -spacing))
         constraints.append(stackView.rightAnchor.constraint(equalTo: view.layoutMarginsGuide.rightAnchor))
         view.addSubview(stackView)
 
@@ -98,6 +90,21 @@ class SwiftViewController: UIViewController {
         localOnlySwitch.addTarget(self, action: #selector(localOnlySwitchDidChange(_:)), for: .valueChanged)
         localOnlySwitchStackView.addArrangedSubview(localOnlySwitch)
         self.localOnlySwitch = localOnlySwitch
+
+        let useContentInsetsSwitchStackView = UIStackView()
+        useContentInsetsSwitchStackView.axis = .horizontal
+        useContentInsetsSwitchStackView.spacing = spacing
+        stackView.addArrangedSubview(useContentInsetsSwitchStackView)
+
+        let useContentInsetsSwitchLabel = UILabel()
+        useContentInsetsSwitchLabel.text = "Use text view content insets"
+        useContentInsetsSwitchLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        useContentInsetsSwitchStackView.addArrangedSubview(useContentInsetsSwitchLabel)
+
+        let useContentInsetsSwitch = UISwitch()
+        useContentInsetsSwitch.addTarget(self, action: #selector(useContentInsetsSwitchDidChange(_:)), for: .valueChanged)
+        useContentInsetsSwitchStackView.addArrangedSubview(useContentInsetsSwitch)
+        self.useContentInsetsSwitch = useContentInsetsSwitch
 
         let showKeyboardSafeAreaLayoutGuideSwitchStackView = UIStackView()
         showKeyboardSafeAreaLayoutGuideSwitchStackView.axis = .horizontal
@@ -121,10 +128,22 @@ class SwiftViewController: UIViewController {
         } else {
             textView.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.97, alpha: 1.0)
         }
+        textView.text = (0..<10).map { _ in """
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            """
+        }.joined()
         textView.layer.cornerRadius = spacing
         textView.textContainerInset = UIEdgeInsets(top: spacing, left: spacing, bottom: spacing, right: spacing)
         textView.scrollIndicatorInsets = UIEdgeInsets(top: spacing, left: 0.0, bottom: spacing, right: 0.0)
-        stackView.addArrangedSubview(textView)
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        constraints.append(textView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: spacing))
+        constraints.append(textView.leftAnchor.constraint(equalTo: view.layoutMarginsGuide.leftAnchor))
+        constraints.append(textView.rightAnchor.constraint(equalTo: view.layoutMarginsGuide.rightAnchor))
+        view.addSubview(textView)
+        self.textView = textView
 
         let keyboardSafeAreaLayoutGuideView = UIView()
         keyboardSafeAreaLayoutGuideView.backgroundColor = UIColor.red.withAlphaComponent(0.2)
@@ -132,10 +151,10 @@ class SwiftViewController: UIViewController {
         keyboardSafeAreaLayoutGuideView.layer.borderWidth = 2.0
         keyboardSafeAreaLayoutGuideView.isUserInteractionEnabled = false
         keyboardSafeAreaLayoutGuideView.translatesAutoresizingMaskIntoConstraints = false
-        constraints.append(keyboardSafeAreaLayoutGuideView.topAnchor.constraint(equalTo: keyboardSafeAreaView.layoutGuide.topAnchor))
-        constraints.append(keyboardSafeAreaLayoutGuideView.leftAnchor.constraint(equalTo: keyboardSafeAreaView.layoutGuide.leftAnchor))
-        constraints.append(keyboardSafeAreaLayoutGuideView.bottomAnchor.constraint(equalTo: keyboardSafeAreaView.layoutGuide.bottomAnchor))
-        constraints.append(keyboardSafeAreaLayoutGuideView.rightAnchor.constraint(equalTo: keyboardSafeAreaView.layoutGuide.rightAnchor))
+        constraints.append(keyboardSafeAreaLayoutGuideView.topAnchor.constraint(equalTo: view.keyboardSafeArea.layoutGuide.topAnchor))
+        constraints.append(keyboardSafeAreaLayoutGuideView.leftAnchor.constraint(equalTo: view.keyboardSafeArea.layoutGuide.leftAnchor))
+        constraints.append(keyboardSafeAreaLayoutGuideView.bottomAnchor.constraint(equalTo: view.keyboardSafeArea.layoutGuide.bottomAnchor))
+        constraints.append(keyboardSafeAreaLayoutGuideView.rightAnchor.constraint(equalTo: view.keyboardSafeArea.layoutGuide.rightAnchor))
         view.addSubview(keyboardSafeAreaLayoutGuideView)
         self.keyboardSafeAreaLayoutGuideView = keyboardSafeAreaLayoutGuideView
 
@@ -143,6 +162,7 @@ class SwiftViewController: UIViewController {
 
         updateKeyboardFrameLabel()
         updateKeyboardSafeAreaIsLocalOnly()
+        updateTextViewLayoutConstraints()
         updateKeyboardSafeAreaLayoutGuideView()
     }
 
@@ -158,12 +178,29 @@ class SwiftViewController: UIViewController {
     }
 
     private func updateKeyboardSafeAreaIsLocalOnly() {
-        guard let keyboardSafeAreaView = keyboardSafeAreaView,
-            let localOnlySwitch = localOnlySwitch else {
+        guard let localOnlySwitch = localOnlySwitch else { return }
+
+        view.keyboardSafeArea.isLocalOnly = localOnlySwitch.isOn
+    }
+
+    private func updateTextViewLayoutConstraints() {
+        guard let useContentInsetsSwitch = useContentInsetsSwitch,
+            let textView = textView else {
             return
         }
 
-        keyboardSafeAreaView.isLocalOnly = localOnlySwitch.isOn
+        if let textViewBottomAnchorConstraint = textViewBottomAnchorConstraint {
+            textViewBottomAnchorConstraint.isActive = false
+            self.textViewBottomAnchorConstraint = nil
+        }
+
+        let textViewBottomAnchorConstraint = useContentInsetsSwitch.isOn ?
+                textView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: -spacing) :
+                textView.bottomAnchor.constraint(equalTo: view.keyboardSafeArea.layoutGuide.bottomAnchor, constant: -spacing)
+        textViewBottomAnchorConstraint.isActive = true
+        self.textViewBottomAnchorConstraint = textViewBottomAnchorConstraint
+
+        updateTextViewContentsInsets()
     }
 
     private func updateKeyboardSafeAreaLayoutGuideView() {
@@ -173,6 +210,23 @@ class SwiftViewController: UIViewController {
         }
 
         keyboardSafeAreaLayoutGuideView.isHidden = !showKeyboardSafeAreaLayoutGuideSwitch.isOn
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        updateTextViewContentsInsets()
+    }
+
+    private func updateTextViewContentsInsets() {
+        guard let useContentInsetsSwitch = useContentInsetsSwitch,
+            let textView = textView else {
+            return
+        }
+
+        let bottomInset = useContentInsetsSwitch.isOn ? view.keyboardSafeArea.insets.bottom : 0.0
+        textView.contentInset.bottom = bottomInset
+        textView.scrollIndicatorInsets.bottom = bottomInset
     }
 
     // MARK: - Actions
@@ -185,6 +239,11 @@ class SwiftViewController: UIViewController {
     @objc
     public func localOnlySwitchDidChange(_ sender: AnyObject) {
         updateKeyboardSafeAreaIsLocalOnly()
+    }
+
+    @objc
+    public func useContentInsetsSwitchDidChange(_ sender: AnyObject) {
+        updateTextViewLayoutConstraints()
     }
 
     @objc

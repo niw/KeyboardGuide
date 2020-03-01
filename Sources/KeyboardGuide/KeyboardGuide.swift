@@ -16,8 +16,6 @@ public protocol KeyboardGuideObserver {
     func keyboardGuide(_ keyboardGuide: KeyboardGuide, didChangeDockedKeyboardState dockedKeyboardState: KeyboardState?)
 }
 
-// MARK: -
-
 @objc(KBGKeyboardGuide)
 public final class KeyboardGuide: NSObject {
     private let isShared: Bool

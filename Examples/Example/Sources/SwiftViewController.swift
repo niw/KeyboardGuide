@@ -137,7 +137,11 @@ class SwiftViewController: UIViewController {
         }.joined()
         textView.layer.cornerRadius = spacing
         textView.textContainerInset = UIEdgeInsets(top: spacing, left: spacing, bottom: spacing, right: spacing)
-        textView.scrollIndicatorInsets = UIEdgeInsets(top: spacing, left: 0.0, bottom: spacing, right: 0.0)
+        textView.scrollIndicatorInsets = UIEdgeInsets(top: spacing, left: 0.0, bottom: 0.0, right: 0.0)
+        textView.contentInsetAdjustmentBehavior = .never
+        if #available(iOS 13.0, *) {
+            textView.automaticallyAdjustsScrollIndicatorInsets = false
+        }
         textView.translatesAutoresizingMaskIntoConstraints = false
         constraints.append(textView.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: spacing))
         constraints.append(textView.leftAnchor.constraint(equalTo: view.layoutMarginsGuide.leftAnchor))
@@ -200,7 +204,7 @@ class SwiftViewController: UIViewController {
         textViewBottomAnchorConstraint.isActive = true
         self.textViewBottomAnchorConstraint = textViewBottomAnchorConstraint
 
-        updateTextViewContentsInsets()
+        updateTextViewContentsBottomInset()
     }
 
     private func updateKeyboardSafeAreaLayoutGuideView() {
@@ -215,10 +219,10 @@ class SwiftViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        updateTextViewContentsInsets()
+        updateTextViewContentsBottomInset()
     }
 
-    private func updateTextViewContentsInsets() {
+    private func updateTextViewContentsBottomInset() {
         guard let useContentInsetsSwitch = useContentInsetsSwitch,
             let textView = textView else {
             return
@@ -226,7 +230,7 @@ class SwiftViewController: UIViewController {
 
         let bottomInset = useContentInsetsSwitch.isOn ? view.keyboardSafeArea.insets.bottom : 0.0
         textView.contentInset.bottom = bottomInset
-        textView.scrollIndicatorInsets.bottom = bottomInset
+        textView.scrollIndicatorInsets.bottom = max(spacing, bottomInset)
     }
 
     // MARK: - Actions

@@ -9,6 +9,8 @@
 // Configuration settings file format documentation can be found at:
 // https://help.apple.com/xcode/#/dev745c5c974
 
+// NOTE: This is a workaround prior to Xcode 10.4.
+// TODO: Remove this in near future.
 // This `XCODE_VERSION_ACTUAL` is used to know if we can use KeyboardGuide target
 // in Swift Package Manager from Objective-C code.
 // See `ObjcViewController.h` for the details.

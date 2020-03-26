@@ -161,7 +161,7 @@ public final class KeyboardGuide: NSObject {
                 return
             }
 
-        // `UIApplication.keyboardWillChangeFrameNotification` _MAY BE_ posted with `CGRect.zero` frame.
+        // `UIResponder.keyboardWillChangeFrameNotification` _MAY BE_ posted with `CGRect.zero` frame.
         // Ignore it, which is useless.
         if frame == CGRect.zero {
             return

@@ -35,7 +35,7 @@ dependencies: [
 
 ### Using KeyboardGuide with the other dependency management tools.
 
-`KeyboardGuide` doesn't support directly the other dependency management tools than Swift Package Manager.
+`KeyboardGuide` doesn’t support directly the other dependency management tools than Swift Package Manager.
 However, since it has no dependencies other than system frameworks, you can still use it from the other dependency management tools.
 
 #### CocoaPods
@@ -81,7 +81,7 @@ $ carthage build --platform iOS
 
 Follow [the Carthage instruction](https://github.com/Carthage/Carthage#if-youre-building-for-ios-tvos-or-watchos) to add the framework to your project and Run Script phase to copy it.
 
-Note that if you're using Xcode 12 or later, you may need to [workaround the problem](https://github.com/Carthage/Carthage/blob/master/Documentation/Xcode12Workaround.md).
+Note that if you’re using Xcode 12 or later, you may need to [workaround the problem](https://github.com/Carthage/Carthage/blob/master/Documentation/Xcode12Workaround.md).
 
 ### Setup KeyboardGuide
 
@@ -120,7 +120,7 @@ override func viewDidLoad() {
 
 ### Manual layout
 
-If you prefer to manually lay out your views or need to use length of keyboard safe area, for such as updating `UIScrollView`'s `contentInset`, override `viewDidLayoutSubviews()` or `layoutSubviews()` as like regular manual lay outing.
+If you prefer to manually lay out your views or need to use length of keyboard safe area, for such as updating `UIScrollView`’s `contentInset`, override `viewDidLayoutSubviews()` or `layoutSubviews()` as like regular manual lay outing.
 
 ```swift
 // In your `UIViewController`

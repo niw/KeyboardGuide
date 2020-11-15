@@ -33,6 +33,56 @@ dependencies: [
 ]
 ```
 
+### Using KeyboardGuide with the other dependency management tools.
+
+`KeyboardGuide` doesn't support directly the other dependency management tools than Swift Package Manager.
+However, since it has no dependencies other than system frameworks, you can still use it from the other dependency management tools.
+
+#### CocoaPods
+
+To use `KeyboardGuide` from [CocoaPods](https://cocoapods.org/), add following `KeyboardGuide.podspec` file in your project.
+
+```ruby
+Pod::Spec.new do |spec|
+  spec.name = "KeyboardGuide"
+  spec.version = "0.2.0" # Find the current version from the version tags.
+  spec.authors = ""
+  spec.summary = "KeyboardGuide"
+  spec.homepage = "https://github.com/niw/KeyboardGuide"
+  spec.platform = :ios, "11.0"
+  spec.source = {
+    :git => "https://github.com/niw/KeyboardGuide.git", :tag => "#{spec.version}"
+  }
+  spec.source_files  = "Sources/KeyboardGuide/*.swift"
+end
+```
+
+Then, update your `Podfile`.
+
+```ruby
+pod 'KeyboardGuide', :podspec => 'path/to/KeyboardGuide.podspec'
+```
+
+#### Carthage
+
+To use `KeyboardGuide` from [Carthage](https://github.com/Carthage/Carthage), update your `Cartfile`.
+
+```
+git "https://github.com/niw/KeyboardGuide.git"
+```
+
+Then, run following commands. Tou will have `Carthage/Build/iOS/KeyboardGuide.framework`.
+
+```
+$ carthage update
+$ (cd Carthage/Checkouts/KeyboardGuide && swift package generate-xcodeproj)
+$ carthage build --platform iOS
+```
+
+Follow [the Carthage instruction](https://github.com/Carthage/Carthage#if-youre-building-for-ios-tvos-or-watchos) to add the framework to your project and Run Script phase to copy it.
+
+Note that if you're using Xcode 12 or later, you may need to [workaround the problem](https://github.com/Carthage/Carthage/blob/master/Documentation/Xcode12Workaround.md).
+
 ### Setup KeyboardGuide
 
 Add `import KeyboardGuide`.

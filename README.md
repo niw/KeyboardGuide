@@ -57,7 +57,7 @@ Pod::Spec.new do |spec|
 end
 ```
 
-Then, update your `Podfile`.
+Then, update `Podfile` in your project.
 
 ```ruby
 pod 'KeyboardGuide', :podspec => 'path/to/KeyboardGuide.podspec'
@@ -65,13 +65,13 @@ pod 'KeyboardGuide', :podspec => 'path/to/KeyboardGuide.podspec'
 
 #### Carthage
 
-To use `KeyboardGuide` from [Carthage](https://github.com/Carthage/Carthage), update your `Cartfile`.
+To use `KeyboardGuide` from [Carthage](https://github.com/Carthage/Carthage), update `Cartfile` in your project.
 
 ```
-git "https://github.com/niw/KeyboardGuide.git"
+github "niw/KeyboardGuide"
 ```
 
-Then, run following commands. Tou will have `Carthage/Build/iOS/KeyboardGuide.framework`.
+Then, run following commands. This will create `Carthage/Build/iOS/KeyboardGuide.framework`.
 
 ```
 $ carthage update
@@ -79,7 +79,7 @@ $ (cd Carthage/Checkouts/KeyboardGuide && swift package generate-xcodeproj)
 $ carthage build --platform iOS
 ```
 
-Follow [the Carthage instruction](https://github.com/Carthage/Carthage#if-youre-building-for-ios-tvos-or-watchos) to add the framework to your project and Run Script phase to copy it.
+Follow [the instruction](https://github.com/Carthage/Carthage#if-youre-building-for-ios-tvos-or-watchos) to add the framework and Run Script phase to your project.
 
 Note that if you’re using Xcode 12 or later, you may need to [workaround the problem](https://github.com/Carthage/Carthage/blob/master/Documentation/Xcode12Workaround.md).
 

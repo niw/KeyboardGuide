@@ -81,8 +81,6 @@ $ carthage build --platform iOS
 
 Follow [the instruction](https://github.com/Carthage/Carthage#if-youre-building-for-ios-tvos-or-watchos) to add the framework and Run Script phase to your project.
 
-Note that if you’re using Xcode 12 or later, you may need to [workaround the problem](https://github.com/Carthage/Carthage/blob/master/Documentation/Xcode12Workaround.md).
-
 ### Setup KeyboardGuide
 
 Add `import KeyboardGuide`.

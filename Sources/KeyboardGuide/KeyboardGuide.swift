@@ -156,8 +156,8 @@ public final class KeyboardGuide: NSObject {
     }
 
     private func updateKeyboardState(with notification: Notification) {
-        guard let isLocal = notification.userInfo?[UIApplication.keyboardIsLocalUserInfoKey] as? Bool,
-            let frame = notification.userInfo?[UIApplication.keyboardFrameEndUserInfoKey] as? CGRect else {
+        guard let isLocal = notification.userInfo?[UIResponder.keyboardIsLocalUserInfoKey] as? Bool,
+            let frame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else {
                 return
             }
 

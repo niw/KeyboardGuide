@@ -33,17 +33,34 @@ public final class KeyboardGuide: NSObject {
         super.init()
     }
 
+    private var applicationHost: ApplicationHost?
+
+    private var isApplicationExtension: Bool {
+        applicationHost?.isApplicationExtension ?? false
+    }
+
     @objc
-    public private(set) var isActive: Bool = false
+    public var isActive: Bool {
+        applicationHost != nil
+    }
 
     @objc
     public func activate() {
+        activate(applicationHost: UIApplication.shared)
+    }
+
+    @objc(activateWithExtensionViewController:)
+    public func activate(with extensionViewController: UIViewController) {
+        activate(applicationHost: extensionViewController)
+    }
+
+    private func activate(applicationHost: ApplicationHost) {
         assert(Thread.isMainThread, "Must be called on main thread")
 
-        guard !isActive else { return }
-        isActive = true
+        guard self.applicationHost == nil else { return }
+        self.applicationHost = applicationHost
 
-        if isShared {
+        if isShared, isApplicationExtension {
             NotificationCenter.default.addObserver(self, selector: #selector(applicationDidEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
             NotificationCenter.default.addObserver(self, selector: #selector(applicationWillEnterForeground(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
         }
@@ -99,6 +116,8 @@ public final class KeyboardGuide: NSObject {
     // MARK: - Notifications
 
     /**
+     UIKit behavior workaround
+
      When the application entered in background, iOS may send multiple state change events to the application,
      such as trait collection change events to capture screen image in both orientations for the application switcher.
 
@@ -116,14 +135,14 @@ public final class KeyboardGuide: NSObject {
 
     @objc
     public func applicationDidEnterBackground(_ notification: Notification) {
-        guard isShared else { return }
+        guard isShared, !isApplicationExtension else { return }
 
         lastFirstResponder = UIResponder.currentFirstResponder
     }
 
     @objc
     public func applicationWillEnterForeground(_ notification: Notification) {
-        guard isShared else { return }
+        guard isShared, !isApplicationExtension else { return }
 
         if let lastFirstResponder = lastFirstResponder,
             lastFirstResponder.shouldRestoreFirstResponder,
@@ -155,7 +174,51 @@ public final class KeyboardGuide: NSObject {
         updateKeyboardState(with: notification)
     }
 
+    /**
+     UIKit bug workaround
+
+     - Confirmed on iOS 13 and iOS 14.
+     - Only when it is application extension.
+     - Only on iPadOS.
+
+     When the keyboard notification sent to application extension on iPad, the keyboard frame in it is always wrong.
+     The frame Y position is always shifted also its height is always shrunk.
+     The amount of these sizes are the height of status bar, which is about 20.0 to 24.0 depends on the device.
+     However, unfotunatelly, in the application extension process, there are no way to know `statusBarFrame`.
+
+     To workaround, detect the negative height of the keyboard frame in `keyboardFrameBeginUserInfoKey` and use it
+     as adjustment size.
+     */
+    private var keyboardFrameAdjustment: CGFloat? {
+        guard #available(iOS 13.0, *), isApplicationExtension, UIDevice.current.userInterfaceIdiom == .pad else {
+            return nil
+        }
+        if let actualKeyboardFrameAdjustment = actualKeyboardFrameAdjustment {
+            return actualKeyboardFrameAdjustment
+        }
+        // The actual keyboard frame adjustment is about 20.0 to 24.0, depends on the device.
+        // Use 24.0 for the best result until we can know actual keyboard frame adjustment.
+        return 24.0
+    }
+
+    private var actualKeyboardFrameAdjustment: CGFloat?
+
+    private func updateActualKeyboardFrameAdjustmentIfNeeded(with notification: Notification) {
+        if #available(iOS 13.0, *),
+           actualKeyboardFrameAdjustment == nil,
+           isApplicationExtension, UIDevice.current.userInterfaceIdiom == .pad,
+           let frame = notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? CGRect,
+           // This must be `frame.size.height` to know if it's negative value or not.
+           // `frame.height` is absolute value and always positive.
+           frame.size.height < 0.0 {
+            actualKeyboardFrameAdjustment = frame.height
+        }
+    }
+
     private func updateKeyboardState(with notification: Notification) {
+        // See `keyboardFrameAdjustment` for details.
+        updateActualKeyboardFrameAdjustmentIfNeeded(with: notification)
+
         guard let isLocal = notification.userInfo?[UIResponder.keyboardIsLocalUserInfoKey] as? Bool,
             let frame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else {
                 return
@@ -173,8 +236,13 @@ public final class KeyboardGuide: NSObject {
         if #available(iOS 13.0, *) {
             keyboardScreen = UIScreen.main
             coordinateSpace = keyboardScreen.coordinateSpace
-            keyboardFrame = frame
-        } else if let keyWindow = UIApplication.shared.keyWindow {
+            // See `keyboardFrameAdjustment` for details.
+            if let keyboardFrameAdjustment = keyboardFrameAdjustment {
+                keyboardFrame = CGRect(x: frame.minX, y: frame.minY - keyboardFrameAdjustment, width: frame.width, height: frame.height + keyboardFrameAdjustment)
+            } else {
+                keyboardFrame = frame
+            }
+        } else if let keyWindow = applicationHost?.keyWindow {
             keyboardScreen = keyWindow.screen
             coordinateSpace = keyWindow
             // Prior to iOS 13.0, keyboard frame in keyboard notifications is positioned wrongly and its X origin is always `0.0`.

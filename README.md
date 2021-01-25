@@ -149,5 +149,3 @@ There are a few known limitations in the current implementation.
 All limitations are currently To-Do of this project.
 
 - No SwiftUI support yet.
-
-- Share extension can’t use this library yet because of `UIApplication` dependency.

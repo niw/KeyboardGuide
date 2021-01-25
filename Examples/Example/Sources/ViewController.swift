@@ -42,15 +42,15 @@ class ViewController: UIViewController {
     }
 
     private struct Section {
-        let title: String
-        let description: String?
-        let items: [Item]
+        var title: String
+        var description: String?
+        var items: [Item]
     }
 
     private struct Item {
-        let title: String
-        let description: String?
-        let action: (ViewController) -> Void
+        var title: String
+        var description: String?
+        var action: (ViewController) -> Void
     }
 
     private var sections = [Section]()

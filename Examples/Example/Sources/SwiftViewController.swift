@@ -38,13 +38,13 @@ class SwiftViewController: UIViewController {
 
     // MARK: - UIViewController
 
-    var keyboardSafeAreaLayoutGuideView: UIView?
-    var keyboardFrameLabel: UILabel?
-    var localOnlySwitch: UISwitch?
-    var useContentInsetsSwitch: UISwitch?
-    var showKeyboardSafeAreaLayoutGuideSwitch: UISwitch?
-    var textView: UITextView?
-    var textViewBottomAnchorConstraint: NSLayoutConstraint?
+    private var keyboardSafeAreaLayoutGuideView: UIView?
+    private var keyboardFrameLabel: UILabel?
+    private var localOnlySwitch: UISwitch?
+    private var useContentInsetsSwitch: UISwitch?
+    private var showKeyboardSafeAreaLayoutGuideSwitch: UISwitch?
+    private var textView: UITextView?
+    private var textViewBottomAnchorConstraint: NSLayoutConstraint?
 
     private var spacing: CGFloat {
         UIFont.systemFontSize * 0.8
@@ -124,11 +124,12 @@ class SwiftViewController: UIViewController {
         let textView = UITextView()
         textView.font = UIFont.systemFont(ofSize: UIFont.systemFontSize * 2.0)
         if #available(iOS 13.0, *) {
-            textView.backgroundColor = UIColor.secondarySystemBackground
+            textView.backgroundColor = .secondarySystemBackground
         } else {
             textView.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.97, alpha: 1.0)
         }
-        textView.text = (0..<5).map { _ in """
+        textView.text = (0..<5).map { _ in
+            """
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
             Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
             Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
@@ -238,22 +239,22 @@ class SwiftViewController: UIViewController {
     // MARK: - Actions
 
     @objc
-    public func didTapDone(_ sender: AnyObject) {
+    private func didTapDone(_ sender: AnyObject) {
         delegate?.swiftViewControllerDidTapDone(self)
     }
 
     @objc
-    public func localOnlySwitchDidChange(_ sender: AnyObject) {
+    private func localOnlySwitchDidChange(_ sender: AnyObject) {
         updateKeyboardSafeAreaIsLocalOnly()
     }
 
     @objc
-    public func useContentInsetsSwitchDidChange(_ sender: AnyObject) {
+    private func useContentInsetsSwitchDidChange(_ sender: AnyObject) {
         updateTextViewLayoutConstraints()
     }
 
     @objc
-    public func showKeyboardSafeAreaSwitchDidChange(_ sender: AnyObject) {
+    private func showKeyboardSafeAreaSwitchDidChange(_ sender: AnyObject) {
         updateKeyboardSafeAreaLayoutGuideView()
     }
 }

@@ -28,7 +28,6 @@
 		5412B6B523FCF4A10013C6E1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5412B6C323FCFDE90013C6E1 /* Example-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Example-Bridging-Header.h"; sourceTree = "<group>"; };
 		5496B0AB24031599003C092C /* SwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIView.swift; sourceTree = "<group>"; };
-		54BF5FC12405935C00AE266F /* Example.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Example.xcconfig; sourceTree = "<group>"; };
 		54F72E2F24030A13004C16BB /* KeyboardGuide */ = {isa = PBXFileReference; lastKnownFileType = folder; name = KeyboardGuide; path = ..; sourceTree = "<group>"; };
 		54F7828723FDB82C00D365DE /* ObjcViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjcViewController.h; sourceTree = "<group>"; };
 		54F7828823FDB82C00D365DE /* ObjcViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjcViewController.m; sourceTree = "<group>"; };
@@ -50,7 +49,6 @@
 		5412B69B23FCF4A00013C6E1 = {
 			isa = PBXGroup;
 			children = (
-				54BF5FC02405933000AE266F /* Configurations */,
 				5412B6A623FCF4A00013C6E1 /* Example */,
 				54F7828223FDA87900D365DE /* Frameworks */,
 				54F7828123FDA7B000D365DE /* Packages */,
@@ -100,14 +98,6 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		54BF5FC02405933000AE266F /* Configurations */ = {
-			isa = PBXGroup;
-			children = (
-				54BF5FC12405935C00AE266F /* Example.xcconfig */,
-			);
-			path = Configurations;
-			sourceTree = "<group>";
-		};
 		54F7828123FDA7B000D365DE /* Packages */ = {
 			isa = PBXGroup;
 			children = (
@@ -152,8 +142,8 @@
 		5412B69C23FCF4A00013C6E1 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1140;
-				LastUpgradeCheck = 1140;
+				LastSwiftUpdateCheck = 1230;
+				LastUpgradeCheck = 1230;
 				ORGANIZATIONNAME = "Yoshimasa Niwa";
 				TargetAttributes = {
 					5412B6A323FCF4A00013C6E1 = {
@@ -246,6 +236,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -306,6 +297,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -336,8 +328,8 @@
 		};
 		5412B6B923FCF4A10013C6E1 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 54BF5FC12405935C00AE266F /* Example.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -358,8 +350,8 @@
 		};
 		5412B6BA23FCF4A10013C6E1 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 54BF5FC12405935C00AE266F /* Example.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;

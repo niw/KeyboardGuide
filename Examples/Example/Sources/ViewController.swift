@@ -80,8 +80,6 @@ class ViewController: UIViewController {
                 viewController.present(swiftUIViewController, animated: true, completion: nil)
             })
         }
-// See `ObjcViewController.h` for the details.
-#if swift(>=5.2)
         exampleItems.append(Item(title: "Objective-C example", description: "Objective-C API usage") { (viewController) in
             let objcViewController = ObjcViewController()
             objcViewController.delegate = viewController
@@ -89,7 +87,6 @@ class ViewController: UIViewController {
             let navigationController = UINavigationController(rootViewController: objcViewController)
             viewController.present(navigationController, animated: true, completion: nil)
         })
-#endif
         sections.append(Section(title: "Examples", description: "Try examples in various situations such as on iPad multi tasking.", items: exampleItems))
 
         if #available(iOS 13.0, *) {
@@ -124,8 +121,6 @@ extension ViewController: SwiftViewControllerDelegate {
     }
 }
 
-// See `ObjcViewController.h` for the details.
-#if swift(>=5.2)
 // MARK: - ObjcViewControllerDelegate
 
 extension ViewController: ObjcViewControllerDelegate {
@@ -133,7 +128,6 @@ extension ViewController: ObjcViewControllerDelegate {
         dismiss(animated: true, completion: nil)
     }
 }
-#endif
 
 // MARK: - UITableViewDataSource
 

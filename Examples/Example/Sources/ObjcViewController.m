@@ -6,9 +6,6 @@
 //  Copyright © 2020 Yoshimasa Niwa. All rights reserved.
 //
 
-// See `ObjcViewController.h` for the details.
-#if defined(XCODE_VERSION_ACTUAL) && XCODE_VERSION_ACTUAL >= 1140
-
 #import "ObjcViewController.h"
 
 @import KeyboardGuide;
@@ -138,5 +135,3 @@
 }
 
 @end
-
-#endif

@@ -151,7 +151,3 @@ All limitations are currently To-Do of this project.
 - No SwiftUI support yet.
 
 - Share extension can’t use this library yet because of `UIApplication` dependency.
-
-- Objective-C code can’t `@import KeyboardGuide` by using Swift Package Manager.
-  This is known, Swift Package Manager limitation prior to Swift 5.2, Xcode 11.4.
-  Use Xcode 11.4, if this limitation is a problem for you.

@@ -35,32 +35,16 @@ dependencies: [
 
 ### Using KeyboardGuide with the other dependency management tools.
 
-`KeyboardGuide` doesn’t support directly the other dependency management tools than Swift Package Manager.
+`KeyboardGuide` doesn’t support directly the other dependency management tools than Swift Package Manager and CocoaPods.
+It is highly recommend to use Swift Package Manager, if possible.
 However, since it has no dependencies other than system frameworks, you can still use it from the other dependency management tools.
 
 #### CocoaPods
 
-To use `KeyboardGuide` from [CocoaPods](https://cocoapods.org/), add following `KeyboardGuide.podspec` file in your project.
+To use `KeyboardGuide` from [CocoaPods](https://cocoapods.org/), add following line in your `Podfile`.
 
 ```ruby
-Pod::Spec.new do |spec|
-  spec.name = "KeyboardGuide"
-  spec.version = "0.2.0" # Find the current version from the version tags.
-  spec.authors = ""
-  spec.summary = "KeyboardGuide"
-  spec.homepage = "https://github.com/niw/KeyboardGuide"
-  spec.platform = :ios, "11.0"
-  spec.source = {
-    :git => "https://github.com/niw/KeyboardGuide.git", :tag => "#{spec.version}"
-  }
-  spec.source_files  = "Sources/KeyboardGuide/*.swift"
-end
-```
-
-Then, update `Podfile` in your project.
-
-```ruby
-pod 'KeyboardGuide', :podspec => 'path/to/KeyboardGuide.podspec'
+pod 'KeyboardGuide'
 ```
 
 #### Carthage

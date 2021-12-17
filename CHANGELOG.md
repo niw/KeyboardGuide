@@ -1,6 +1,13 @@
 Changelog
 =========
 
+0.2.1
+-----
+
+- Add CocoaPods support. (#3)
+- Clean up example application.
+- Minor implementation change.
+
 0.2.0
 -----
 

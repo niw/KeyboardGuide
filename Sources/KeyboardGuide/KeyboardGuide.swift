@@ -125,13 +125,17 @@ public final class KeyboardGuide: NSObject {
     public func applicationWillEnterForeground(_ notification: Notification) {
         guard isShared else { return }
 
-        if let lastFirstResponder = lastFirstResponder,
-           lastFirstResponder.shouldRestoreFirstResponder,
-           lastFirstResponder.canBecomeFirstResponder
-        {
-            lastFirstResponder.becomeFirstResponder()
-        }
+        guard let lastFirstResponder = lastFirstResponder else { return }
         self.lastFirstResponder = nil
+
+        // Try to restore the first responder to maintain the last keyboard state.
+        if lastFirstResponder.shouldRestoreFirstResponder, lastFirstResponder.becomeFirstResponder() {
+            return
+        }
+
+        // In case it doesn't or can't restore the first responder,
+        // assume that there are no keyboard remaining on the screen.
+        dockedKeyboardState = nil
     }
 
     @objc

@@ -1,0 +1,18 @@
+//
+//  Example.xcconfig
+//  Example
+//
+//  Created by Yoshimasa Niwa on 10/6/22.
+//  Copyright © 2022 Yoshimasa Niwa. All rights reserved.
+//
+
+// Place `Local.xcconfig` file which is git ignored in this `Configurations` directory
+// can supply local specific configurations such as code signing identity.
+// For example, put next content as `Local.xcconfig`.
+// ```
+// CODE_SIGN_STYLE = Manual
+// CODE_SIGN_IDENTITY = iPhone Developer
+// DEVELOPMENT_TEAM = $(YOUR_DEVELOPMENT_TEAM_ID)
+// PROVISIONING_PROFILE_SPECIFIER = $(YOUR_WILDCARD_PROFILE_NAME)
+// ```
+#include? "Local.xcconfig"

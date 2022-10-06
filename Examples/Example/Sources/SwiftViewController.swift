@@ -67,9 +67,11 @@ class SwiftViewController: UIViewController {
         stackView.axis = .vertical
         stackView.spacing = spacing
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        constraints.append(stackView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: spacing))
-        constraints.append(stackView.leftAnchor.constraint(equalTo: view.layoutMarginsGuide.leftAnchor))
-        constraints.append(stackView.rightAnchor.constraint(equalTo: view.layoutMarginsGuide.rightAnchor))
+        constraints.append(contentsOf: [
+            stackView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: spacing),
+            stackView.leftAnchor.constraint(equalTo: view.layoutMarginsGuide.leftAnchor),
+            stackView.rightAnchor.constraint(equalTo: view.layoutMarginsGuide.rightAnchor)
+        ])
         view.addSubview(stackView)
 
         let keyboardFrameLabel = UILabel()
@@ -157,10 +159,12 @@ class SwiftViewController: UIViewController {
         keyboardSafeAreaLayoutGuideView.layer.borderWidth = 2.0
         keyboardSafeAreaLayoutGuideView.isUserInteractionEnabled = false
         keyboardSafeAreaLayoutGuideView.translatesAutoresizingMaskIntoConstraints = false
-        constraints.append(keyboardSafeAreaLayoutGuideView.topAnchor.constraint(equalTo: view.keyboardSafeArea.layoutGuide.topAnchor))
-        constraints.append(keyboardSafeAreaLayoutGuideView.leftAnchor.constraint(equalTo: view.keyboardSafeArea.layoutGuide.leftAnchor))
-        constraints.append(keyboardSafeAreaLayoutGuideView.bottomAnchor.constraint(equalTo: view.keyboardSafeArea.layoutGuide.bottomAnchor))
-        constraints.append(keyboardSafeAreaLayoutGuideView.rightAnchor.constraint(equalTo: view.keyboardSafeArea.layoutGuide.rightAnchor))
+        constraints.append(contentsOf: [
+            keyboardSafeAreaLayoutGuideView.topAnchor.constraint(equalTo: view.keyboardSafeArea.layoutGuide.topAnchor),
+            keyboardSafeAreaLayoutGuideView.leftAnchor.constraint(equalTo: view.keyboardSafeArea.layoutGuide.leftAnchor),
+            keyboardSafeAreaLayoutGuideView.bottomAnchor.constraint(equalTo: view.keyboardSafeArea.layoutGuide.bottomAnchor),
+            keyboardSafeAreaLayoutGuideView.rightAnchor.constraint(equalTo: view.keyboardSafeArea.layoutGuide.rightAnchor)
+        ])
         view.addSubview(keyboardSafeAreaLayoutGuideView)
         self.keyboardSafeAreaLayoutGuideView = keyboardSafeAreaLayoutGuideView
 

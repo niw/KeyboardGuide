@@ -78,9 +78,11 @@
     UILabel * const label = [[UILabel alloc] init];
 
     label.translatesAutoresizingMaskIntoConstraints = NO;
-    [constraints addObject:[label.topAnchor constraintEqualToAnchor:self.view.layoutMarginsGuide.topAnchor]];
-    [constraints addObject:[label.leftAnchor constraintEqualToAnchor:self.view.layoutMarginsGuide.leftAnchor]];
-    [constraints addObject:[label.rightAnchor constraintEqualToAnchor:self.view.layoutMarginsGuide.rightAnchor]];
+    [constraints addObjectsFromArray:@[
+        [label.topAnchor constraintEqualToAnchor:self.view.layoutMarginsGuide.topAnchor],
+        [label.leftAnchor constraintEqualToAnchor:self.view.layoutMarginsGuide.leftAnchor],
+        [label.rightAnchor constraintEqualToAnchor:self.view.layoutMarginsGuide.rightAnchor]
+    ]];
     [self.view addSubview:label];
     self.label = label;
 
@@ -98,13 +100,17 @@
     textView.text = text;
 
     textView.translatesAutoresizingMaskIntoConstraints = NO;
-    [constraints addObject:[textView.topAnchor constraintEqualToAnchor:label.bottomAnchor]];
-    [constraints addObject:[textView.leadingAnchor constraintEqualToAnchor:self.view.layoutMarginsGuide.leadingAnchor]];
-    [constraints addObject:[textView.bottomAnchor constraintGreaterThanOrEqualToAnchor:textView.topAnchor]];
+    [constraints addObjectsFromArray:@[
+        [textView.topAnchor constraintEqualToAnchor:label.bottomAnchor],
+        [textView.leadingAnchor constraintEqualToAnchor:self.view.layoutMarginsGuide.leadingAnchor],
+        [textView.bottomAnchor constraintGreaterThanOrEqualToAnchor:textView.topAnchor]
+    ]];
     NSLayoutConstraint * const textViewBottonAnchorConstraint = [textView.bottomAnchor constraintEqualToAnchor:self.view.kbg_keyboardSafeArea.layoutGuide.bottomAnchor];
     textViewBottonAnchorConstraint.priority = UILayoutPriorityDefaultLow;
-    [constraints addObject:textViewBottonAnchorConstraint];
-    [constraints addObject:[textView.trailingAnchor constraintEqualToAnchor:self.view.layoutMarginsGuide.trailingAnchor]];
+    [constraints addObjectsFromArray:@[
+        textViewBottonAnchorConstraint,
+        [textView.trailingAnchor constraintEqualToAnchor:self.view.layoutMarginsGuide.trailingAnchor]
+    ]];
     [self.view addSubview:textView];
     self.textView = textView;
 

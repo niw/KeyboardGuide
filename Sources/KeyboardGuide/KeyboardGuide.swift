@@ -126,8 +126,9 @@ public final class KeyboardGuide: NSObject {
         guard isShared else { return }
 
         if let lastFirstResponder = lastFirstResponder,
-            lastFirstResponder.shouldRestoreFirstResponder,
-            lastFirstResponder.canBecomeFirstResponder {
+           lastFirstResponder.shouldRestoreFirstResponder,
+           lastFirstResponder.canBecomeFirstResponder
+        {
             lastFirstResponder.becomeFirstResponder()
         }
         self.lastFirstResponder = nil
@@ -157,9 +158,10 @@ public final class KeyboardGuide: NSObject {
 
     private func updateKeyboardState(with notification: Notification) {
         guard let isLocal = notification.userInfo?[UIResponder.keyboardIsLocalUserInfoKey] as? Bool,
-            let frame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else {
-                return
-            }
+              let frame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect
+        else {
+            return
+        }
 
         // `UIResponder.keyboardWillChangeFrameNotification` _MAY BE_ posted with `CGRect.zero` frame.
         // Ignore it, which is useless.

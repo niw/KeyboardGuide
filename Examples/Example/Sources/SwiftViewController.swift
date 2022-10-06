@@ -201,8 +201,8 @@ class SwiftViewController: UIViewController {
         }
 
         let textViewBottomAnchorConstraint = useContentInsetsSwitch.isOn ?
-                textView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: -spacing) :
-                textView.bottomAnchor.constraint(equalTo: view.keyboardSafeArea.layoutGuide.bottomAnchor, constant: -spacing)
+            textView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: -spacing) :
+            textView.bottomAnchor.constraint(equalTo: view.keyboardSafeArea.layoutGuide.bottomAnchor, constant: -spacing)
         textViewBottomAnchorConstraint.priority = .defaultLow
         textViewBottomAnchorConstraint.isActive = true
         self.textViewBottomAnchorConstraint = textViewBottomAnchorConstraint

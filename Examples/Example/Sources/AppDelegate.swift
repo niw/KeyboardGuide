@@ -17,9 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Activate KeyboardGuide at the beginning of application life cycle.
         KeyboardGuide.shared.activate()
 
-        if #available(iOS 13.0, *) {
-            // Use `SceneDelegate` instead.
-        } else {
+        if #unavailable(iOS 13.0) {
             let window = UIWindow(frame: UIScreen.main.bounds)
             window.rootViewController = UINavigationController(rootViewController: ViewController())
             window.makeKeyAndVisible()

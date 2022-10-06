@@ -22,15 +22,15 @@ extension UIResponder {
      */
     @objc(kbg_shouldRestoreFirstResponder)
     public var shouldRestoreFirstResponder: Bool {
-        set {
-            objc_setAssociatedObject(self, &UIResponder.shouldRestoreFirstResponderAssociateKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
         get {
             if let shouldRestoreFirstResponder = objc_getAssociatedObject(self, &UIResponder.shouldRestoreFirstResponderAssociateKey) as? Bool {
                 return shouldRestoreFirstResponder
             }
 
             return self is UITextInputTraits
+        }
+        set {
+            objc_setAssociatedObject(self, &UIResponder.shouldRestoreFirstResponderAssociateKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
 

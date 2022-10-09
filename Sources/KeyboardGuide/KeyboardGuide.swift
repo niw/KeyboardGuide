@@ -184,27 +184,73 @@ public final class KeyboardGuide: NSObject {
             return
         }
 
-        let keyboardScreen: UIScreen
         let coordinateSpace: UICoordinateSpace
+        let keyboardContainerBounds: CGRect
         let keyboardFrame: CGRect
-        if #available(iOS 13.0, *) {
-            keyboardScreen = UIScreen.main
+        if #available(iOS 16.0, *), UIDevice.current.userInterfaceIdiom == .pad {
+            // iPadOS 16.0 and later supports Stage Manager that introduced multiple edge cases.
+
+            // TODO: Address missing keyboard notifications on iPadOS 16.0 with Stage Manager.
+            // On iPadOS 16.0, the system doesn't not post any keyboard notifications when only
+            // height of the window is changed, such as resizing window to hide dock on Stage Manager.
+            // Unlike when width of the window is changed.
+
+            // On iPadOS 16.0 and later, the keyboard frame is on the screen coordinate.
+            let keyboardScreen = UIScreen.main
             coordinateSpace = keyboardScreen.coordinateSpace
+
+            if let keyWindow = UIApplication.shared.windows.first(where: { window in window.isKeyWindow }) {
+                // Do not use `window.frame`, which is not in the screen coordinate space.
+                let keyWindowFrame = coordinateSpace.convert(keyWindow.bounds, from: keyWindow)
+
+                // This is an arbitrary condition if Stage Manager is enabled and the window is not
+                // full-screen.
+                // - If Stage Manager is enabled and the window is not full-screen, there is always
+                //   some gap in vertical axis around the window.
+                // - If the window is full-screen, the window frame height can be same as screen
+                //   bounds height.
+                if keyboardScreen.bounds.height == keyWindowFrame.height {
+                    // When Stage Manager is not enabled or the window is in full-screen,
+                    // the keyboard frame is not clipped to the key window.
+                    keyboardContainerBounds = keyboardScreen.bounds
+
+                    // Sometimes, when the window is full-screen, the keyboard frame is positioned
+                    // wrongly and its X origin is off the screen.
+                    // Use keyboard container origin X instead, since keyboard is always appearing
+                    // in full-width.
+                    keyboardFrame = CGRect(x: keyboardContainerBounds.origin.x, y: frame.origin.y, width: frame.size.width, height: frame.size.height)
+                } else {
+                    // When Stage Manager is enabled and the window is not full-screen,
+                    // the keyboard frame is clipped to the key window frame on screen coordinate space.
+                    keyboardContainerBounds = keyWindowFrame
+                    keyboardFrame = frame
+                }
+            } else {
+                // In case we can't find key window, which is unlikely happening.
+                keyboardContainerBounds = keyboardScreen.bounds
+                keyboardFrame = frame
+            }
+        } else if #available(iOS 13.0, *) {
+            // On iOS 13.0 and later, the keyboard frame is on the screen coordinate.
+            let keyboardScreen = UIScreen.main
+            coordinateSpace = keyboardScreen.coordinateSpace
+            // The keyboard container is always screen bounds, can be larger than window frame.
+            keyboardContainerBounds = keyboardScreen.bounds
             keyboardFrame = frame
         } else if let keyWindow = UIApplication.shared.keyWindow {
-            keyboardScreen = keyWindow.screen
+            // On prior to iOS 13.0, the keyboard frame is on the window coordinate.
+            let keyboardScreen = keyWindow.screen
             coordinateSpace = keyWindow
-            // Prior to iOS 13.0, keyboard frame in keyboard notifications is positioned wrongly and its X origin is always `0.0`.
-            // Assign real X origin instead.
-            let realKeyboardOriginX = coordinateSpace.convert(CGPoint.zero, from: keyboardScreen.coordinateSpace).x
-            keyboardFrame = CGRect(x: realKeyboardOriginX, y: frame.origin.y, width: frame.size.width, height: frame.size.height)
+            // The keyboard container is always screen bounds, can be larger than window frame.
+            keyboardContainerBounds = coordinateSpace.convert(keyboardScreen.bounds, from: keyboardScreen.coordinateSpace)
+            keyboardFrame = CGRect(x: keyboardContainerBounds.origin.x, y: frame.origin.y, width: frame.size.width, height: frame.size.height)
         } else {
             return
         }
 
         // While the main screen bound is being changed, notifications _MAY BE_ posted with wrong frame.
         // Ignore it, because it will be eventual consistent with the following notifications.
-        if keyboardScreen.bounds.width != keyboardFrame.width {
+        if keyboardContainerBounds.width != keyboardFrame.width {
             return
         }
 

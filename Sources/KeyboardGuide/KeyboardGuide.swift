@@ -189,41 +189,30 @@ public final class KeyboardGuide: NSObject {
         let keyboardFrame: CGRect
         if #available(iOS 16.0, *), UIDevice.current.userInterfaceIdiom == .pad {
             // iPadOS 16.0 and later supports Stage Manager that introduced multiple edge cases.
-
-            // TODO: Address missing keyboard notifications on iPadOS 16.0 with Stage Manager.
-            // On iPadOS 16.0, the system doesn't not post any keyboard notifications when only
-            // height of the window is changed, such as resizing window to hide dock on Stage Manager.
-            // Unlike when width of the window is changed.
+            // Note that iPadOS 16.0 was not released and first release version is iPadOS 16.1.
 
             // On iPadOS 16.0 and later, the keyboard frame is on the screen coordinate.
             let keyboardScreen = UIScreen.main
             coordinateSpace = keyboardScreen.coordinateSpace
 
-            if let keyWindow = UIApplication.shared.windows.first(where: { window in window.isKeyWindow }) {
+            // `keyWindow` is deprecated API, however, it gives the right current key window.
+            if let keyWindow = UIApplication.shared.keyWindow {
                 // Do not use `window.frame`, which is not in the screen coordinate space.
                 let keyWindowFrame = coordinateSpace.convert(keyWindow.bounds, from: keyWindow)
 
-                // This is an arbitrary condition if Stage Manager is enabled and the window is not
-                // full-screen.
-                // - If Stage Manager is enabled and the window is not full-screen, there is always
-                //   some gap in vertical axis around the window.
-                // - If the window is full-screen, the window frame height can be same as screen
-                //   bounds height.
-                if keyboardScreen.bounds.height == keyWindowFrame.height {
-                    // When Stage Manager is not enabled or the window is in full-screen,
-                    // the keyboard frame is not clipped to the key window.
+                // On iPad 16.0 and later, sometimes the keyboard frame is clipped in the key window frame.
+                // This is an arbitrary condition if it's clipped.
+                if frame.width == keyWindowFrame.width {
+                    keyboardContainerBounds = keyWindowFrame
+                    keyboardFrame = frame
+                } else {
                     keyboardContainerBounds = keyboardScreen.bounds
 
-                    // Sometimes, when the window is full-screen, the keyboard frame is positioned
-                    // wrongly and its X origin is off the screen.
+                    // In case the keyboard frame is not clipped, sometimes the keyboard frame is positioned
+                    // wrongly such as off the screen, or wrongly using key window frame origin X.
                     // Use keyboard container origin X instead, since keyboard is always appearing
                     // in full-width.
                     keyboardFrame = CGRect(x: keyboardContainerBounds.origin.x, y: frame.origin.y, width: frame.size.width, height: frame.size.height)
-                } else {
-                    // When Stage Manager is enabled and the window is not full-screen,
-                    // the keyboard frame is clipped to the key window frame on screen coordinate space.
-                    keyboardContainerBounds = keyWindowFrame
-                    keyboardFrame = frame
                 }
             } else {
                 // In case we can't find key window, which is unlikely happening.

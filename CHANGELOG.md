@@ -1,6 +1,14 @@
 Changelog
 =========
 
+0.2.2
+-----
+
+- Add iPadOS 16 support.
+- Proactively remove observers to reduce leaking.
+- Reset keyboard state when it can't restore first responder.
+- Improve example application.
+
 0.2.1
 -----
 

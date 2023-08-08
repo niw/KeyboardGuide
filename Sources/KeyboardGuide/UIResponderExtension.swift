@@ -36,7 +36,7 @@ extension UIResponder {
 
     private static weak var repliedFirstResponder: UIResponder?
 
-    @objc(_kbg_replyFristResponder)
+    @objc(_kbg_replyFirstResponder)
     func replyFirstResponder() {
         UIResponder.repliedFirstResponder = self
     }

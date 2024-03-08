@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name = 'KeyboardGuide'
-  spec.version = '0.2.2'
+  spec.version = '0.2.3'
   spec.author = {
     'Yoshimasa Niwa' => 'niw@niw.at'
   }

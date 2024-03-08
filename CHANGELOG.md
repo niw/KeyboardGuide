@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.2.3
+-----
+
+- FIX: method visibilities.
+- FIX: typo in ObjC name (#4)
+
 0.2.2
 -----
 

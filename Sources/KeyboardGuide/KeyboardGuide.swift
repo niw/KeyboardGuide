@@ -100,7 +100,7 @@ public final class KeyboardGuide: NSObject {
     // MARK: - Properties
 
     @objc
-    public var dockedKeyboardState: KeyboardState? {
+    public private(set) var dockedKeyboardState: KeyboardState? {
         didSet {
             let notification = Notification(name: didChangeStateNotification, object: self, userInfo: nil)
             NotificationCenter.default.post(notification)
@@ -126,14 +126,14 @@ public final class KeyboardGuide: NSObject {
     private var lastFirstResponder: UIResponder?
 
     @objc
-    public func applicationDidEnterBackground(_ notification: Notification) {
+    private func applicationDidEnterBackground(_ notification: Notification) {
         guard isShared else { return }
 
         lastFirstResponder = UIResponder.currentFirstResponder
     }
 
     @objc
-    public func applicationWillEnterForeground(_ notification: Notification) {
+    private func applicationWillEnterForeground(_ notification: Notification) {
         guard isShared else { return }
 
         guard let lastFirstResponder = lastFirstResponder else { return }
@@ -150,19 +150,19 @@ public final class KeyboardGuide: NSObject {
     }
 
     @objc
-    public func keyboardWillShow(_ notification: Notification) {
+    private func keyboardWillShow(_ notification: Notification) {
         // _MAY BE_ called in `UIView` animation block.
         updateKeyboardState(with: notification)
     }
 
     @objc
-    public func keyboardWillHide(_ notification: Notification) {
+    private func keyboardWillHide(_ notification: Notification) {
         // _MAY BE_ called in `UIView` animation block.
         dockedKeyboardState = nil
     }
 
     @objc
-    public func keyboardWillChangeFrame(_ notification: Notification) {
+    private func keyboardWillChangeFrame(_ notification: Notification) {
         // _MAY BE_ called in `UIView` animation block.
 
         // Only update docked keyboard state when the keyboard is currently docked.
